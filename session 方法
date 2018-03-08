@@ -1,0 +1,55 @@
+import requests
+from bs4 import BeautifulSoup
+import os
+from PIL import Image
+
+def get_post_data(url):
+
+    #首先获取登陆页面的html
+    html = requests.get(url)
+    soup = BeautifulSoup(html.text,"lxml")
+
+    #找到form的验证参数
+    __VTEWSTATE = soup.find("input",attrs={"name":"__VTEWSTATE"})["value"]
+
+    #下载图片
+    pic = requests.get("'http://jw.****.edu.cn/(gxv2le55n4jswm45mkv14o2n)/CheckCode.aspx'").content
+    with open("ver_pic.png","wb") as f:
+        f.write(pic)
+
+    #打开验证的图片
+    image = Image.open("{}/ver_pic.png".format(os.getcwd()))
+    image.show()
+
+
+    #构造需要post的参数表
+    data = {
+        "txtusername":"",
+        "textbox1":"",
+        "textsecretcode":"",
+        "textbox2":"",
+        'Button1': '',
+        'lbLanguage': '',
+        'hidPdrs': '',
+        'hidsc': '',
+        "__VTEWSTATE":""
+    }
+
+    #构造登陆的post参数
+    data["__VTEWSTATE"] = __VTEWSTATE
+    data["textsecretcode"] = input("请输入图片中的验证码")
+    data["txtusername"] = input("请输入学号")
+    data["textbox2"] = input("请输入密码")
+
+    return data
+
+#登陆教务系统
+def login(url,data)
+    #通过requests库构造一个浏览器session，这能帮助我们自动，持久管理cookies
+    s = requests.session()
+    s.post(url,data=data)
+    return s
+
+base_url = "http://jw.****.edu.cn/(dhsdhsdsandksdd)/default2.aspx"
+data = get_post_data(base_url)
+print(data)
